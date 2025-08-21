@@ -49,4 +49,14 @@ class PurchaseModel extends Model
             ->groupBy('purchases.id')
             ->findAll();
     }
+
+    public function getPurchaseItems($purchaseId)
+    {
+        return $this->db->table('purchase_items')
+            ->select('purchase_items.*, products.name as product_name')
+            ->join('products', 'products.id = purchase_items.product_id')
+            ->where('purchase_id', $purchaseId)
+            ->get()
+            ->getResultArray();
+    }
 }

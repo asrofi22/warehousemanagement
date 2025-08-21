@@ -24,6 +24,12 @@
 
             <li class="menu-label">DATA TRANSAKSI</li>
             <li>
+                <a href="<?= base_url('purchase') ?>">
+                    <div class="parent-icon icon-color-5"><i class="bx bx-cart"></i></div>
+                    <div class="menu-title">Manajemen Pembelian</div>
+                </a>
+            </li>
+            <li>
                 <a href="<?= base_url('incoming-item') ?>">
                     <div class="parent-icon icon-color-2"><i class="bx bx-import"></i></div>
                     <div class="menu-title">Data Barang Masuk</div>
@@ -92,9 +98,12 @@
                             data-bs-toggle="dropdown">
                             <div class="d-flex user-box align-items-center">
                                 <div class="user-info">
-                                    <p class="user-name mb-0">Jessica Doe</p>
+                                    <p class="user-name mb-0">
+                                        <?= esc(logged_in() ? user()->username : 'Guest') ?>
+                                    </p>
                                 </div>
-                                <img src="assets/images/avatars/avatar-1.png" class="user-img" alt="user avatar">
+                                <img src="<?= base_url(); ?>assets/images/avatars/avatar-1.png" class="user-img"
+                                    alt="user avatar">
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">

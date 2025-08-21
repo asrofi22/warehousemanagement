@@ -33,18 +33,21 @@ abstract class BaseController extends Controller
      * class instantiation. These helpers will be available
      * to all other controllers that extend BaseController.
      *
-     * @var list<string>
+     * @var array
      */
-    protected $helpers = [];
+    protected $helpers = ['auth', 'form']; // Add 'auth' and 'form' helpers
 
     /**
      * Be sure to declare properties for any property fetch you initialized.
-     * The creation of dynamic property is deprecated in PHP 8.2.
+     * The creation of new property should be done on child class / controller
+     * that needs it.
+     *
+     * @var array<string, mixed>|null
      */
-    // protected $session;
+    protected $data;
 
     /**
-     * @return void
+     * Constructor.
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -53,6 +56,6 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
 
-        // E.g.: $this->session = service('session');
+        // E.g.: $this->session = \Config\Services::session();
     }
 }
