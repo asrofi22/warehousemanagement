@@ -24,7 +24,6 @@
 
 <body>
 
-    <?= view('auth/_navbar') ?>
 
     <main role="main" class="container">
         <?= $this->renderSection('main') ?>
