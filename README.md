@@ -5,7 +5,7 @@ Berikut saya buatin draft **README.md** untuk project SIMGudang Anda:
 # SIMGudang
 
 **Sistem Informasi Manajemen Gudang Berbasis Web**
-Dibangun dengan **CodeIgniter 4**, **PHP 8.2**, dan template **Syndash (Bootstrap 4/5)**.
+Dibangun dengan **CodeIgniter 4**, **PHP 8.2**, dan template **Syndash (Bootstrap)**.
 
 ---
 
