@@ -1,5 +1,3 @@
-Berikut saya buatin draft **README.md** untuk project SIMGudang Anda:
-
 ---
 
 # SIMGudang
@@ -132,5 +130,3 @@ project-root/
 Dibuat oleh **Asrofi** (2025)
 
 ---
-
-Mau saya bikinkan sekalian format **Markdown lengkap (.md)** biar bisa langsung dipakai di GitHub, atau cukup teks penjelasan aja?
