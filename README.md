@@ -1,9 +1,9 @@
----
 
 # SIMGudang
 
 **Sistem Informasi Manajemen Gudang Berbasis Web**
 Dibangun dengan **CodeIgniter 4**, **PHP 8.2**, dan template **Syndash (Bootstrap)**.
+![Dashboard](screenshot/dashboard.png)
 
 ---
 
