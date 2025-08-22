@@ -1,68 +1,132 @@
-# CodeIgniter 4 Application Starter
+---
 
-## What is CodeIgniter?
+# SIMGudang
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+**Sistem Informasi Manajemen Gudang Berbasis Web**
+Dibangun dengan **CodeIgniter 4**, **PHP 8.2**, dan template **Syndash (Bootstrap)**.
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+---
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## 📂 Struktur Proyek
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+```
+project-root/
+│── app/                       # Folder utama aplikasi CI4
+│   ├── Config/                # Konfigurasi project (BaseURL, Database, dsb.)
+│   ├── Controllers/           # Logic aplikasi (Home, Products, Purchase, dsb.)
+│   ├── Models/                # Model untuk query database
+│   ├── Views/                 # Halaman tampilan (Blade-like CI4)
+│   │   ├── layouts/           # Template global (navbar, footer, template)
+│   │   ├── Auth/              # Tampilan autentikasi
+│   │   ├── user/              # Tampilan manajemen user
+│   │   ├── category.php       # Tampilan Data Category
+│   │   ├── home.php           # Tampilan dashboard
+│   │   ├── incoming_item.php  # Tampilan Data Barang Masuk
+│   │   ├── outgoing_item.php  # Tampilan Data Barang Keluar
+│   │   ├── purchase.php       # Tampilan Data Pembelian/Purchase
+│   │   ├── report_index.php   # Tampilan index Laporan
+│   │   ├── report.php         # Tampilan Laporan Data Barang Masuk, Barang Keluar, dan Stok
+│   │   └── product.php        # Tampilan Data Produk
+│── public/                    # Folder akses publik (CSS, JS, Images, Assets)
+│── writable/                  # Cache, logs, uploads
+│── .env                       # Konfigurasi environment (database, app url, dll.)
+│── composer.json              # Dependency project
+```
 
-## Installation & updates
+---
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+## ✨ Fitur Utama
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+1. **Dashboard**
 
-## Setup
+   - Ringkasan total pembelian, barang masuk, barang keluar, dan total stok.
+   - Tabel "Pembelian Terbaru" untuk memantau transaksi terakhir.
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+2. **Manajemen Pembelian**
 
-## Important Change with index.php
+   - Input transaksi pembelian dari vendor.
+   - Tracking status pembelian (Received).
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+3. **Data Barang Masuk & Keluar**
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+   - Catat semua barang yang masuk/keluar gudang.
+   - Update otomatis stok barang.
 
-**Please** read the user guide for a better explanation of how CI4 works!
+4. **Data Master**
 
-## Repository Management
+   - **Data Barang**: CRUD data barang.
+   - **Kategori Barang**: Pengelompokan barang.
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+5. **Laporan**
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+   - Rekap barang masuk, keluar, dan stok.
 
-## Server Requirements
+6. **Manajemen User **
 
-PHP version 8.1 or higher is required, with the following extensions installed:
+   - CRUD data User
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+---
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
+## ⚙️ Instalasi & Setup
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+1. **Clone Repository**
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+   ```bash
+   git clone https://github.com/username/simgudang.git
+   cd simgudang
+   ```
+
+2. **Install Dependencies**
+
+   ```bash
+   composer install
+   ```
+
+3. **Konfigurasi Environment**
+   Salin file `.env.example` menjadi `.env` lalu sesuaikan:
+
+   ```ini
+   app.baseURL = 'http://localhost:8080/'
+   database.default.hostname = localhost
+   database.default.database = db_warehouse
+   database.default.username = root
+   database.default.password =
+   database.default.DBDriver = MySQLi
+   ```
+
+4. **Migrasi Database**
+
+   ```bash
+   php spark migrate
+   php spark db:seed DatabaseSeeder
+   ```
+
+   atau bisa import langsung db_warehouse.sql yang telah saya lampirkan ke MySQL
+
+5. **Jalankan Server**
+
+   ```bash
+   php spark serve
+   ```
+
+   Akses di browser: `http://localhost:8080`
+
+---
+
+## 🛠️ Tantangan & Solusi
+
+- **Integrasi Template Syndash ke CodeIgniter 4**
+  Tantangan: Template berbasis Bootstrap dengan banyak dependensi JS & CSS.
+  Solusi: Membuat `layouts/template.php` lalu extend ke setiap view agar konsisten.
+
+- **CSRF & Form Submission**
+  Tantangan: Error 403 saat submit form.
+  Solusi: Mengaktifkan helper `form` dan menambahkan `<?= csrf_field(); ?>` di setiap form.
+
+---
+
+## 👨‍💻 Developer
+
+Dibuat oleh **Asrofi** (2025)
+
+---
