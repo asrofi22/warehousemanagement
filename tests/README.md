@@ -1,118 +1,134 @@
-# Running Application Tests
+Berikut saya buatin draft **README.md** untuk project SIMGudang Anda:
 
-This is the quick-start to CodeIgniter testing. Its intent is to describe what
-it takes to set up your application and get it ready to run unit tests.
-It is not intended to be a full description of the test features that you can
-use to test your application. Those details can be found in the documentation.
+---
 
-## Resources
+# SIMGudang
 
-* [CodeIgniter 4 User Guide on Testing](https://codeigniter.com/user_guide/testing/index.html)
-* [PHPUnit docs](https://phpunit.de/documentation.html)
-* [Any tutorials on Unit testing in CI4?](https://forum.codeigniter.com/showthread.php?tid=81830)
+**Sistem Informasi Manajemen Gudang Berbasis Web**
+Dibangun dengan **CodeIgniter 4**, **PHP 8.2**, dan template **Syndash (Bootstrap 4/5)**.
 
-## Requirements
+---
 
-It is recommended to use the latest version of PHPUnit. At the time of this
-writing, we are running version 9.x. Support for this has been built into the
-**composer.json** file that ships with CodeIgniter and can easily be installed
-via [Composer](https://getcomposer.org/) if you don't already have it installed globally.
+## 📂 Struktur Proyek
 
-```console
-> composer install
+```
+project-root/
+│── app/                       # Folder utama aplikasi CI4
+│   ├── Config/                # Konfigurasi project (BaseURL, Database, dsb.)
+│   ├── Controllers/           # Logic aplikasi (Home, Products, Purchase, dsb.)
+│   ├── Models/                # Model untuk query database
+│   ├── Views/                 # Halaman tampilan (Blade-like CI4)
+│   │   ├── layouts/           # Template global (navbar, footer, template)
+│   │   ├── Auth/              # Tampilan autentikasi
+│   │   ├── user/              # Tampilan manajemen user
+│   │   ├── category.php       # Tampilan Data Category
+│   │   ├── home.php           # Tampilan dashboard
+│   │   ├── incoming_item.php  # Tampilan Data Barang Masuk
+│   │   ├── outgoing_item.php  # Tampilan Data Barang Keluar
+│   │   ├── purchase.php       # Tampilan Data Pembelian/Purchase
+│   │   ├── report_index.php   # Tampilan index Laporan
+│   │   ├── report.php         # Tampilan Laporan Data Barang Masuk, Barang Keluar, dan Stok
+│   │   └── product.php        # Tampilan Data Produk
+│── public/                    # Folder akses publik (CSS, JS, Images, Assets)
+│── writable/                  # Cache, logs, uploads
+│── .env                       # Konfigurasi environment (database, app url, dll.)
+│── composer.json              # Dependency project
 ```
 
-If running under macOS or Linux, you can create a symbolic link to make running tests a touch nicer.
+---
 
-```console
-> ln -s ./vendor/bin/phpunit ./phpunit
-```
+## ✨ Fitur Utama
 
-You also need to install [XDebug](https://xdebug.org/docs/install) in order
-for code coverage to be calculated successfully. After installing `XDebug`, you must add `xdebug.mode=coverage` in the **php.ini** file to enable code coverage.
+1. **Dashboard**
 
-## Setting Up
+   - Ringkasan total pembelian, barang masuk, barang keluar, dan total stok.
+   - Tabel "Pembelian Terbaru" untuk memantau transaksi terakhir.
 
-A number of the tests use a running database.
-In order to set up the database edit the details for the `tests` group in
-**app/Config/Database.php** or **.env**.
-Make sure that you provide a database engine that is currently running on your machine.
-More details on a test database setup are in the
-[Testing Your Database](https://codeigniter.com/user_guide/testing/database.html) section of the documentation.
+2. **Manajemen Pembelian**
 
-## Running the tests
+   - Input transaksi pembelian dari vendor.
+   - Tracking status pembelian (Received).
 
-The entire test suite can be run by simply typing one command-line command from the main directory.
+3. **Data Barang Masuk & Keluar**
 
-```console
-> ./phpunit
-```
+   - Catat semua barang yang masuk/keluar gudang.
+   - Update otomatis stok barang.
 
-If you are using Windows, use the following command.
+4. **Data Master**
 
-```console
-> vendor\bin\phpunit
-```
+   - **Data Barang**: CRUD data barang.
+   - **Kategori Barang**: Pengelompokan barang.
 
-You can limit tests to those within a single test directory by specifying the
-directory name after phpunit.
+5. **Laporan**
 
-```console
-> ./phpunit app/Models
-```
+   - Rekap barang masuk, keluar, dan stok.
 
-## Generating Code Coverage
+6. **Manajemen User **
 
-To generate coverage information, including HTML reports you can view in your browser,
-you can use the following command:
+   - CRUD data User
 
-```console
-> ./phpunit --colors --coverage-text=tests/coverage.txt --coverage-html=tests/coverage/ -d memory_limit=1024m
-```
+---
 
-This runs all of the tests again collecting information about how many lines,
-functions, and files are tested. It also reports the percentage of the code that is covered by tests.
-It is collected in two formats: a simple text file that provides an overview as well
-as a comprehensive collection of HTML files that show the status of every line of code in the project.
+## ⚙️ Instalasi & Setup
 
-The text file can be found at **tests/coverage.txt**.
-The HTML files can be viewed by opening **tests/coverage/index.html** in your favorite browser.
+1. **Clone Repository**
 
-## PHPUnit XML Configuration
+   ```bash
+   git clone https://github.com/username/simgudang.git
+   cd simgudang
+   ```
 
-The repository has a ``phpunit.xml.dist`` file in the project root that's used for
-PHPUnit configuration. This is used to provide a default configuration if you
-do not have your own configuration file in the project root.
+2. **Install Dependencies**
 
-The normal practice would be to copy ``phpunit.xml.dist`` to ``phpunit.xml``
-(which is git ignored), and to tailor it as you see fit.
-For instance, you might wish to exclude database tests, or automatically generate
-HTML code coverage reports.
+   ```bash
+   composer install
+   ```
 
-## Test Cases
+3. **Konfigurasi Environment**
+   Salin file `.env.example` menjadi `.env` lalu sesuaikan:
 
-Every test needs a *test case*, or class that your tests extend. CodeIgniter 4
-provides one class that you may use directly:
-* `CodeIgniter\Test\CIUnitTestCase`
+   ```ini
+   app.baseURL = 'http://localhost:8080/'
+   database.default.hostname = localhost
+   database.default.database = simgudang
+   database.default.username = root
+   database.default.password =
+   database.default.DBDriver = MySQLi
+   ```
 
-Most of the time you will want to write your own test cases that extend `CIUnitTestCase`
-to hold functions and services common to your test suites.
+4. **Migrasi Database**
 
-## Creating Tests
+   ```bash
+   php spark migrate
+   php spark db:seed DatabaseSeeder
+   ```
 
-All tests go in the **tests/** directory. Each test file is a class that extends a
-**Test Case** (see above) and contains methods for the individual tests. These method
-names must start with the word "test" and should have descriptive names for precisely what
-they are testing:
-`testUserCanModifyFile()` `testOutputColorMatchesInput()` `testIsLoggedInFailsWithInvalidUser()`
+5. **Jalankan Server**
 
-Writing tests is an art, and there are many resources available to help learn how.
-Review the links above and always pay attention to your code coverage.
+   ```bash
+   php spark serve
+   ```
 
-### Database Tests
+   Akses di browser: `http://localhost:8080`
 
-Tests can include migrating, seeding, and testing against a mock or live database.
-Be sure to modify the test case (or create your own) to point to your seed and migrations
-and include any additional steps to be run before tests in the `setUp()` method.
-See [Testing Your Database](https://codeigniter.com/user_guide/testing/database.html)
-for details.
+---
+
+## 🛠️ Tantangan & Solusi
+
+- **Integrasi Template Syndash ke CodeIgniter 4**
+  Tantangan: Template berbasis Bootstrap dengan banyak dependensi JS & CSS.
+  Solusi: Membuat `layouts/template.php` lalu extend ke setiap view agar konsisten.
+
+- **CSRF & Form Submission**
+  Tantangan: Error 403 saat submit form.
+  Solusi: Mengaktifkan helper `form` dan menambahkan `<?= csrf_field(); ?>` di setiap form.
+
+---
+
+## 👨‍💻 Developer
+
+Dibuat oleh **Asrofi** (2025)
+
+---
+
+Mau saya bikinkan sekalian format **Markdown lengkap (.md)** biar bisa langsung dipakai di GitHub, atau cukup teks penjelasan aja?
