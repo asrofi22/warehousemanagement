@@ -29,6 +29,12 @@
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/app.css" />
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/dark-sidebar.css" />
     <link rel="stylesheet" href="<?= base_url(); ?>assets/css/dark-theme.css" />
+
+    <!--Data Tables -->
+    <link href="<?= base_url(); ?>assets/plugins/datatable/css/dataTables.bootstrap4.min.css" rel="stylesheet"
+        type="text/css">
+    <link href="<?= base_url(); ?>assets/plugins/datatable/css/buttons.bootstrap4.min.css" rel="stylesheet"
+        type="text/css">
 </head>
 
 <body>
@@ -54,6 +60,23 @@
     <script src="<?= base_url(); ?>assets/js/index2.js"></script>
     <!-- App JS -->
     <script src="<?= base_url(); ?>assets/js/app.js"></script>
+
+    <!--Data Tables js-->
+    <script src="<?= base_url(); ?>assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            //Default data table
+            $('#example').DataTable();
+            var table = $('#example2').DataTable({
+                lengthChange: false,
+                buttons: ['copy', 'excel', 'pdf', 'print', 'colvis']
+            });
+            table.buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+        });
+    </script>
+
+    <?= $this->include('layouts/footer'); ?>
+
 </body>
 
 

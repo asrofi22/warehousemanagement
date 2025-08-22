@@ -84,7 +84,7 @@ helper('form');
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Kode Produk</th>
                                         <th>Nama Produk</th>
                                         <th>Tanggal</th>
@@ -97,9 +97,9 @@ helper('form');
                                             <td colspan="5" class="text-center">Tidak ada barang masuk ditemukan</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($incoming_items as $item): ?>
+                                        <?php foreach ($incoming_items as $index => $item): ?>
                                             <tr>
-                                                <td><?= esc($item['id']) ?></td>
+                                                <td><?= $index + 1 ?></td>
                                                 <td><?= esc($item['product_code']) ?></td>
                                                 <td><?= esc($item['product_name']) ?></td>
                                                 <td><?= esc($item['date']) ?></td>
@@ -114,7 +114,7 @@ helper('form');
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Kode Produk</th>
                                         <th>Nama Produk</th>
                                         <th>Tanggal</th>
@@ -127,9 +127,9 @@ helper('form');
                                             <td colspan="5" class="text-center">Tidak ada barang keluar ditemukan</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($outgoing_items as $item): ?>
+                                        <?php foreach ($outgoing_items as $index => $item): ?>
                                             <tr>
-                                                <td><?= esc($item['id']) ?></td>
+                                                <td><?= $index + 1 ?></td>
                                                 <td><?= esc($item['product_code']) ?></td>
                                                 <td><?= esc($item['product_name']) ?></td>
                                                 <td><?= esc($item['date']) ?></td>
@@ -144,7 +144,7 @@ helper('form');
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Kode Produk</th>
                                         <th>Nama Produk</th>
                                         <th>Kategori</th>
@@ -158,9 +158,9 @@ helper('form');
                                             <td colspan="6" class="text-center">Tidak ada produk ditemukan</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($products as $product): ?>
+                                        <?php foreach ($products as $index => $product): ?>
                                             <tr>
-                                                <td><?= esc($product['id']) ?></td>
+                                                <td><?= $index + 1 ?></td>
                                                 <td><?= esc($product['code']) ?></td>
                                                 <td><?= esc($product['name']) ?></td>
                                                 <td><?= esc($product['category_name'] ?? '-') ?></td>
@@ -182,38 +182,53 @@ helper('form');
 <!--end page-wrapper-->
 
 <!-- Print-specific CSS -->
+<!-- Print-specific CSS -->
 <style>
+    /* Default (normal screen) : sembunyikan area cetak */
+    #print-area {
+        display: none;
+    }
+
     @media print {
         body * {
             visibility: hidden;
         }
 
-        #report-table,
-        #report-table * {
+        #print-area,
+        #print-area * {
             visibility: visible;
         }
 
-        #report-table {
+        #print-area {
+            display: block;
             position: absolute;
             left: 0;
             top: 0;
             width: 100%;
+            padding: 20px;
         }
 
-        .print-only {
-            visibility: visible !important;
-            margin-bottom: 10px;
+        .header-report {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        .page-wrapper,
-        .page-content-wrapper,
-        .page-content,
-        .card,
-        .card-body {
+        .header-report h2,
+        .header-report h4 {
             margin: 0;
             padding: 0;
-            border: none;
-            box-shadow: none;
+        }
+
+        .header-line {
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            margin: 10px 0 20px 0;
+        }
+
+        .print-title {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 10px;
         }
 
         table {
@@ -226,31 +241,162 @@ helper('form');
             border: 1px solid #000;
             padding: 8px;
             font-size: 12px;
+            text-align: left;
         }
 
-        .table-striped tr:nth-child(even) {
-            background-color: #f2f2f2;
+        .footer-report {
+            margin-top: 40px;
         }
 
+        .footer-sign {
+            float: right;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        /* elemen-elemen yang tidak perlu ikut cetak */
         .btn,
         .page-breadcrumb,
         .alert,
-        form {
+        form,
+        .card-title,
+        .btn-group,
+        #report-table {
             display: none !important;
         }
     }
 </style>
 
-<!-- JavaScript for Print -->
+<!-- Cetak Area -->
+<div id="print-area">
+    <div class="header-report">
+        <h2>PT Asrofi</h2>
+        <h4><?= $title ?></h4>
+        <div class="header-line"></div>
+    </div>
+
+    <div class="print-title">
+        <?php if ($mode === 'incoming' || $mode === 'outgoing'): ?>
+            Periode: <?= esc($start_date) ?> s/d <?= esc($end_date) ?>
+        <?php else: ?>
+            Per <?= date('Y-m-d') ?>
+        <?php endif; ?>
+    </div>
+
+    <div>
+        <?php if ($mode === 'incoming'): ?>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Kode Produk</th>
+                        <th>Nama Produk</th>
+                        <th>Tanggal</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($incoming_items)): ?>
+                        <tr>
+                            <td colspan="5" class="text-center">Tidak ada barang masuk ditemukan</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($incoming_items as $index => $item): ?>
+                            <tr>
+                                <td><?= $index + 1 ?></td>
+                                <td><?= esc($item['product_code']) ?></td>
+                                <td><?= esc($item['product_name']) ?></td>
+                                <td><?= esc($item['date']) ?></td>
+                                <td><?= esc($item['quantity']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        <?php elseif ($mode === 'outgoing'): ?>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Kode Produk</th>
+                        <th>Nama Produk</th>
+                        <th>Tanggal</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($outgoing_items)): ?>
+                        <tr>
+                            <td colspan="5" class="text-center">Tidak ada barang keluar ditemukan</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($outgoing_items as $index => $item): ?>
+                            <tr>
+                                <td><?= $index + 1 ?></td>
+                                <td><?= esc($item['product_code']) ?></td>
+                                <td><?= esc($item['product_name']) ?></td>
+                                <td><?= esc($item['date']) ?></td>
+                                <td><?= esc($item['quantity']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Kode Produk</th>
+                        <th>Nama Produk</th>
+                        <th>Kategori</th>
+                        <th>Satuan</th>
+                        <th>Stok</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($products)): ?>
+                        <tr>
+                            <td colspan="6" class="text-center">Tidak ada produk ditemukan</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($products as $index => $product): ?>
+                            <tr>
+                                <td><?= $index + 1 ?></td>
+                                <td><?= esc($product['code']) ?></td>
+                                <td><?= esc($product['name']) ?></td>
+                                <td><?= esc($product['category_name'] ?? '-') ?></td>
+                                <td><?= esc($product['unit']) ?></td>
+                                <td><?= esc($product['stock']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+
+    <div class="footer-report">
+        <div class="footer-sign">
+            <?= date('d F Y') ?><br>
+            Mengetahui,<br><br><br><br>
+            <u>(___________________)</u><br>
+            Manager
+        </div>
+    </div>
+</div>
+
 <script>
     function printReport() {
-        // Check if table is empty
-        if (document.querySelector('#example tbody tr td').textContent.includes('Tidak ada')) {
+        const printArea = document.querySelector('#print-area');
+        const tableBody = printArea.querySelector('tbody');
+        if (tableBody && tableBody.textContent.includes('Tidak ada')) {
             alert('Tidak ada data untuk dicetak!');
             return;
         }
         window.print();
     }
 </script>
+
 
 <?= $this->endSection() ?>

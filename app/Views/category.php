@@ -69,7 +69,7 @@
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Nama Kategori</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -80,9 +80,9 @@
                                             <td colspan="3" class="text-center">Tidak ada kategori ditemukan</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($categories as $category): ?>
+                                        <?php foreach ($categories as $index => $category): ?>
                                             <tr>
-                                                <td><?= esc($category['id']) ?></td>
+                                                <td><?= $index + 1 ?></td>
                                                 <td><?= esc($category['name']) ?></td>
                                                 <td>
                                                     <a href="<?= base_url('category/edit/' . $category['id']) ?>"

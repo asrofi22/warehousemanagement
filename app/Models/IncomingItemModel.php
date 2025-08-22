@@ -9,41 +9,21 @@ class IncomingItemModel extends Model
     protected $table = 'incoming_items';
     protected $primaryKey = 'id';
     protected $allowedFields = ['purchase_id', 'date', 'quantity'];
-
-    protected $useAutoIncrement = true;
     protected $returnType = 'array';
-    protected $useTimestamps = false;
+    protected $useSoftDeletes = false; // Assuming soft deletes are disabled
 
-    // Validation rules
-    protected $validationRules = [
-        'purchase_id' => 'required|integer',
-        'date' => 'required|valid_date',
-        'quantity' => 'required|decimal|greater_than[0]'
-    ];
-
-    protected $validationMessages = [
-        'purchase_id' => [
-            'required' => 'Purchase ID is required',
-            'integer' => 'Purchase ID must be a valid number'
-        ],
-        'date' => [
-            'required' => 'Date is required',
-            'valid_date' => 'Please enter a valid date'
-        ],
-        'quantity' => [
-            'required' => 'Quantity is required',
-            'decimal' => 'Quantity must be a valid number',
-            'greater_than' => 'Quantity must be greater than 0'
-        ]
-    ];
-
-    // Get incoming items with purchase and product details
     public function getIncomingItemsWithDetails()
     {
-        return $this->select('incoming_items.*, purchases.vendor_name, SUM(purchase_items.quantity) as purchase_quantity')
-            ->join('purchases', 'purchases.id = incoming_items.purchase_id')
-            ->join('purchase_items', 'purchase_items.purchase_id = incoming_items.purchase_id')
-            ->groupBy('incoming_items.id')
-            ->findAll();
+        $builder = $this->db->table('incoming_items i');
+        return $builder->select('i.id, i.purchase_id, i.date, i.quantity, p.vendor_name, p.purchase_date, p.buyer_name, 
+                (SELECT SUM(pi.quantity) FROM purchase_items pi WHERE pi.purchase_id = i.purchase_id) as purchase_quantity')
+            ->join('purchases p', 'p.id = i.purchase_id', 'left') // Use LEFT JOIN to handle missing purchases
+            ->get()
+            ->getResultArray();
+    }
+
+    public function purchaseHasIncoming($purchaseId)
+    {
+        return $this->where('purchase_id', $purchaseId)->countAllResults() > 0;
     }
 }

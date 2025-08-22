@@ -98,7 +98,7 @@
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Kategori</th>
                                         <th>Nama Produk</th>
                                         <th>Kode</th>
@@ -113,9 +113,9 @@
                                             <td colspan="7" class="text-center">Tidak ada produk ditemukan</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($products as $product): ?>
+                                        <?php foreach ($products as $index => $product): ?>
                                             <tr>
-                                                <td><?= esc($product['id']) ?></td>
+                                                <td><?= $index + 1 ?></td>
                                                 <td><?= esc($product['category_name']) ?></td>
                                                 <td><?= esc($product['name']) ?></td>
                                                 <td><?= esc($product['code']) ?></td>

@@ -92,8 +92,8 @@ class UserController extends BaseController
         $validation = \Config\Services::validation();
 
         $validation->setRules([
-            'email' => 'required|valid_email|is_unique[users.email,id,' . $id . ']',
-            'username' => 'required|alpha_numeric|min_length[3]|is_unique[users.username,id,' . $id . ']',
+            'email' => "required|valid_email|is_unique[users.email,id,{$id}]",
+            'username' => "required|alpha_numeric|min_length[3]|is_unique[users.username,id,{$id}]",
             'password' => 'permit_empty|min_length[8]',
             'active' => 'permit_empty|in_list[0,1]',
         ]);
@@ -113,12 +113,14 @@ class UserController extends BaseController
             $data['password_hash'] = Password::hash($password);
         }
 
-        if (!$this->userModel->update($id, $data)) {
-            return redirect()->back()->withInput()->with('error', 'Failed to update user.');
+        if (!$this->userModel->skipValidation(true)->update($id, $data)) {
+            $modelErrors = $this->userModel->errors();
+            return redirect()->back()->withInput()->with('error', 'Failed to update user: ' . implode(', ', $modelErrors));
         }
 
         return redirect()->to('/user')->with('success', 'User updated successfully.');
     }
+
 
     public function delete($id)
     {

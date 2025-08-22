@@ -85,7 +85,7 @@
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Email</th>
                                         <th>Username</th>
                                         <th>Active</th>
@@ -99,9 +99,9 @@
                                             <td colspan="6" class="text-center">Tidak ada user ditemukan</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($users as $u): ?>
+                                        <?php foreach ($users as $index => $u): ?>
                                             <tr>
-                                                <td><?= esc($u->id) ?></td>
+                                                <td><?= $index + 1 ?></td>
                                                 <td><?= esc($u->email) ?></td>
                                                 <td><?= esc($u->username) ?></td>
                                                 <td><?= $u->active ? 'Yes' : 'No' ?></td>

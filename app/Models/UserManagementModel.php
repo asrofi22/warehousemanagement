@@ -56,31 +56,19 @@ class UserManagementModel extends UserModel
      */
     protected function hashPassword(array $data)
     {
-        // Debug: cek apakah password ada
-        if (isset($data['data']['password'])) {
+        if (isset($data['data']['password']) && !empty($data['data']['password'])) {
             $data['data']['password_hash'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
             unset($data['data']['password']);
-        } else {
-            // Jika update tanpa password, pastikan password_hash tidak diubah
-            if (isset($data['data']['password_hash'])) {
-                unset($data['data']['password_hash']);
-            }
         }
-
         return $data;
     }
 
-    /**
-     * Override save method untuk memastikan password_hash selalu ada
-     */
     public function save($data = null): bool
     {
-        // Pastikan data adalah array
         if ($data !== null && !is_array($data)) {
             $data = (array) $data;
         }
 
-        // Jika membuat user baru, pastikan password ada
         if (empty($data['id']) && empty($data['password']) && empty($data['password_hash'])) {
             $this->errors['password'] = 'Password is required for new users';
             return false;
@@ -89,9 +77,6 @@ class UserManagementModel extends UserModel
         return parent::save($data);
     }
 
-    /**
-     * Get all users, optionally including soft-deleted ones
-     */
     public function getUsers($includeDeleted = false)
     {
         if ($includeDeleted) {

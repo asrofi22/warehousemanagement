@@ -181,7 +181,7 @@
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Nama Vendor</th>
                                         <th>Tanggal Pembelian</th>
                                         <th>Nama Pembeli</th>
@@ -195,9 +195,9 @@
                                             <td colspan="6" class="text-center">Tidak ada pembelian ditemukan</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($purchases as $purchase): ?>
+                                        <?php foreach ($purchases as $index => $purchase): ?>
                                             <tr>
-                                                <td><?= esc($purchase['id']) ?></td>
+                                                <td><?= $index + 1 ?></td>
                                                 <td><?= esc($purchase['vendor_name']) ?></td>
                                                 <td><?= esc(date('d-m-Y H:i', strtotime($purchase['purchase_date']))) ?></td>
                                                 <td><?= esc($purchase['buyer_name']) ?></td>

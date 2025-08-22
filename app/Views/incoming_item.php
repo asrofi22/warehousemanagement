@@ -1,127 +1,176 @@
-<?= $this->extend('layouts/template'); ?>
+<?php $this->extend('layouts/template'); ?>
 
-<?= $this->section('content'); ?>
-<!--page-wrapper-->
+<?php $this->section('content'); ?>
 <div class="page-wrapper">
-    <!--page-content-wrapper-->
     <div class="page-content-wrapper">
         <div class="page-content">
-            <!--breadcrumb-->
-            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <!-- Breadcrumb -->
+            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-4">
                 <div class="breadcrumb-title pe-3">Transaksi Barang Masuk</div>
                 <div class="ps-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
                             <li class="breadcrumb-item active" aria-current="page">
-                                <?= isset($mode) && ($mode === 'create' || $mode === 'edit') ? ($mode === 'create' ? 'Tambah Transaksi Barang Masuk Baru' : 'Edit Transaksi Barang Masuk') : 'Daftar Transaksi Barang Masuk' ?>
+                                <?= $mode === 'create' ? 'Tambah Baru' : 'Daftar' ?>
                             </li>
                         </ol>
                     </nav>
                 </div>
-                <?php if (!isset($mode) || ($mode !== 'create' && $mode !== 'edit')): ?>
+                <?php if ($mode === 'index'): ?>
                     <div class="ms-auto">
-                        <div class="btn-group">
-                            <a href="<?= base_url('incoming-item/create') ?>" class="btn btn-primary">Tambah Transaksi
-                                Barang Masuk Baru</a>
-                        </div>
+                        <a href="<?= base_url('incoming-item/create') ?>" class="btn btn-primary">
+                            <i class="bx bx-plus"></i> Tambah Baru
+                        </a>
                     </div>
                 <?php endif; ?>
             </div>
-            <!--end breadcrumb-->
+
             <div class="card">
                 <div class="card-body">
                     <div class="card-title">
                         <h4 class="mb-0">
-                            <?= isset($mode) && ($mode === 'create' || $mode === 'edit') ? ($mode === 'create' ? 'Form Tambah Transaksi Barang Masuk' : 'Form Edit Transaksi Barang Masuk') : 'Daftar Transaksi Barang Masuk' ?>
+                            <?= $mode === 'create' ? 'Tambah Transaksi Barang Masuk' : 'Daftar Transaksi Barang Masuk' ?>
                         </h4>
                     </div>
                     <hr />
-                    <?php if (isset($mode) && ($mode === 'create' || $mode === 'edit')): ?>
-                        <?php if (session()->getFlashdata('errors')): ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <?php foreach (session()->getFlashdata('errors') as $error): ?>
-                                    <p><?= esc($error) ?></p>
-                                <?php endforeach; ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                    <!-- Notifications -->
+                    <?php if (session('success')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bx bx-check-circle"></i> <?= esc(session('success')) ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (session('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bx bx-error"></i> <?= esc(session('error')) ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Create Form -->
+                    <?php if ($mode === 'create'): ?>
+                        <form action="<?= base_url('incoming-item/store') ?>" method="post">
+                            <?= csrf_field() ?>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="purchase_id" class="form-label fw-bold">Pembelian <span
+                                                class="text-danger">*</span></label>
+                                        <select class="form-select" id="purchase_id" name="purchase_id" required>
+                                            <option value="" disabled selected>Pilih Pembelian</option>
+                                            <?php foreach ($purchases as $purchase): ?>
+                                                <option value="<?= esc($purchase['id']) ?>"
+                                                    data-quantity="<?= esc($purchase['total_quantity']) ?>"
+                                                    <?= old('purchase_id') == $purchase['id'] ? 'selected' : '' ?>>
+                                                    <?= esc($purchase['vendor_name']) ?> -
+                                                    <?= date('d/m/Y', strtotime($purchase['purchase_date'])) ?> -
+                                                    Total: <?= number_format($purchase['total_quantity'], 0) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <?php if (empty($purchases)): ?>
+                                            <small class="text-danger mt-1 d-block">
+                                                Tidak ada pembelian yang tersedia. Pastikan ada pembelian yang belum memiliki
+                                                transaksi barang masuk dan memiliki jumlah > 0.
+                                            </small>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="date" class="form-label fw-bold">Tanggal Barang Masuk <span
+                                                class="text-danger">*</span></label>
+                                        <input type="datetime-local" class="form-control" id="date" name="date" required
+                                            value="<?= esc(old('date', date('Y-m-d\TH:i'))) ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Jumlah Barang Masuk</label>
+                                        <div class="form-control bg-light" id="quantity-display">0</div>
+                                        <small class="form-text text-muted">Jumlah otomatis sesuai total pembelian</small>
+                                    </div>
+                                </div>
                             </div>
-                        <?php endif; ?>
-                        <form
-                            action="<?= $mode === 'create' ? base_url('incoming-item/store') : base_url('incoming-item/update/' . $incoming_item['id']) ?>"
-                            method="post">
-                            <div class="mb-3">
-                                <label for="purchase_id" class="form-label">Pembelian</label>
-                                <select class="form-control" id="purchase_id" name="purchase_id">
-                                    <option value="">Pilih Pembelian</option>
-                                    <?php foreach ($purchases as $purchase): ?>
-                                        <option value="<?= $purchase['id'] ?>" <?= isset($incoming_item) && $incoming_item['purchase_id'] == $purchase['id'] ? 'selected' : '' ?>>
-                                            <?= esc($purchase['vendor_name']) . ' - ' . esc(date('d-m-Y H:i', strtotime($purchase['purchase_date']))) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary" <?= empty($purchases) ? 'disabled' : '' ?>>
+                                    <i class="bx bx-save"></i> Simpan
+                                </button>
+                                <a href="<?= base_url('incoming-item') ?>" class="btn btn-secondary">
+                                    <i class="bx bx-arrow-back"></i> Kembali
+                                </a>
                             </div>
-                            <div class="mb-3">
-                                <label for="date" class="form-label">Tanggal</label>
-                                <input type="datetime-local" class="form-control" id="date" name="date"
-                                    value="<?= isset($incoming_item) ? date('Y-m-d\TH:i', strtotime($incoming_item['date'])) : old('date') ?>"
-                                    placeholder="Pilih tanggal">
-                            </div>
-                            <div class="mb-3">
-                                <label for="quantity" class="form-label">Jumlah</label>
-                                <input type="number" class="form-control" id="quantity" name="quantity" step="0.01"
-                                    value="<?= isset($incoming_item) ? esc($incoming_item['quantity']) : old('quantity') ?>"
-                                    placeholder="Masukkan jumlah">
-                            </div>
-                            <button type="submit"
-                                class="btn btn-primary waves-effect waves-light"><?= $mode === 'create' ? 'Simpan' : 'Perbarui' ?></button>
-                            <a href="<?= base_url('incoming-item') ?>" class="btn btn-secondary waves-effect">Batal</a>
                         </form>
+
+                        <!-- JavaScript for Quantity Display -->
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const purchaseSelect = document.getElementById('purchase_id');
+                                const quantityDisplay = document.getElementById('quantity-display');
+
+                                if (purchaseSelect) {
+                                    purchaseSelect.addEventListener('change', () => {
+                                        const selectedOption = purchaseSelect.options[purchaseSelect.selectedIndex];
+                                        const quantity = selectedOption?.getAttribute('data-quantity') || '0';
+                                        quantityDisplay.textContent = parseInt(quantity).toLocaleString('id-ID');
+                                    });
+
+                                    // Trigger change event if a value is pre-selected
+                                    if (purchaseSelect.value) {
+                                        purchaseSelect.dispatchEvent(new Event('change'));
+                                    }
+                                }
+                            });
+                        </script>
+
+                        <!-- Index/List View -->
                     <?php else: ?>
-                        <?php if (session()->getFlashdata('message')): ?>
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <?= esc(session()->getFlashdata('message')) ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        <?php endif; ?>
-                        <?php if (session()->getFlashdata('errors')): ?>
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <?php foreach (session()->getFlashdata('errors') as $error): ?>
-                                    <p><?= esc($error) ?></p>
-                                <?php endforeach; ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        <?php endif; ?>
                         <div class="table-responsive">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Nama Vendor</th>
-                                        <th>Tanggal</th>
+                                        <th>#</th>
+                                        <th>Vendor</th>
+                                        <th>Tanggal Pembelian</th>
+                                        <th>Tanggal Barang Masuk</th>
                                         <th>Jumlah</th>
-                                        <th>Jumlah Pembelian</th>
+                                        <th>Pembeli</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($incoming_items)): ?>
                                         <tr>
-                                            <td colspan="6" class="text-center">Tidak ada transaksi barang masuk ditemukan</td>
+                                            <td colspan="7" class="text-center py-4">
+                                                <i class="bx bx-package text-muted" style="font-size: 3rem;"></i>
+                                                <p class="mt-2 text-muted">Belum ada transaksi barang masuk</p>
+                                                <a href="<?= base_url('incoming-item/create') ?>" class="btn btn-primary mt-2">
+                                                    <i class="bx bx-plus"></i> Buat Transaksi Pertama
+                                                </a>
+                                            </td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($incoming_items as $item): ?>
+                                        <?php foreach ($incoming_items as $index => $item): ?>
                                             <tr>
-                                                <td><?= esc($item['id']) ?></td>
-                                                <td><?= esc($item['vendor_name']) ?></td>
-                                                <td><?= esc(date('d-m-Y H:i', strtotime($item['date']))) ?></td>
-                                                <td><?= esc($item['quantity']) ?></td>
-                                                <td><?= esc($item['purchase_quantity']) ?></td>
+                                                <td><?= $index + 1 ?></td>
+                                                <td><?= isset($item['vendor_name']) ? esc($item['vendor_name']) : '-' ?></td>
+                                                <td><?= isset($item['purchase_date']) ? date('d/m/Y', strtotime($item['purchase_date'])) : '-' ?>
+                                                </td>
+                                                <td><?= date('d/m/Y H:i', strtotime($item['date'])) ?></td>
+                                                <td><?= number_format($item['quantity'], 0) ?></td>
+                                                <td><?= isset($item['buyer_name']) ? esc($item['buyer_name']) : '-' ?></td>
                                                 <td>
-                                                    <a href="<?= base_url('incoming-item/edit/' . $item['id']) ?>"
-                                                        class="btn btn-sm btn-warning waves-effect waves-light">Edit</a>
                                                     <a href="<?= base_url('incoming-item/delete/' . $item['id']) ?>"
-                                                        class="btn btn-sm btn-danger waves-effect waves-light"
-                                                        onclick="return confirm('Apakah Anda yakin ingin menghapus transaksi barang masuk ini?')">Hapus</a>
+                                                        class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Hapus transaksi ini? Stok produk akan dikurangi. Yakin?')">
+                                                        <i class="bx bx-trash"></i> Hapus
+                                                    </a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -134,7 +183,5 @@
             </div>
         </div>
     </div>
-    <!--end page-content-wrapper-->
 </div>
-<!--end page-wrapper-->
-<?= $this->endSection(); ?>
+<?php $this->endSection(); ?>

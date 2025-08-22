@@ -9,15 +9,12 @@ class PurchaseItemModel extends Model
     protected $table = 'purchase_items';
     protected $primaryKey = 'id';
     protected $allowedFields = ['purchase_id', 'product_id', 'quantity'];
-
-    protected $useAutoIncrement = true;
     protected $returnType = 'array';
 
-    // Validation rules
     protected $validationRules = [
         'purchase_id' => 'required|integer',
         'product_id' => 'required|integer',
-        'quantity' => 'required|decimal|greater_than[0]'
+        'quantity' => 'required|greater_than[0]'
     ];
 
     protected $validationMessages = [
@@ -31,7 +28,6 @@ class PurchaseItemModel extends Model
         ],
         'quantity' => [
             'required' => 'Quantity is required',
-            'decimal' => 'Quantity must be a valid number',
             'greater_than' => 'Quantity must be greater than 0'
         ]
     ];
@@ -48,8 +44,21 @@ class PurchaseItemModel extends Model
     // Get total quantity for a purchase
     public function getTotalQuantity($purchaseId)
     {
-        return $this->where('purchase_id', $purchaseId)
+        $result = $this->where('purchase_id', $purchaseId)
             ->selectSum('quantity')
-            ->first()['quantity'] ?? 0;
+            ->first();
+
+        return $result['quantity'] ?? 0;
+    }
+
+    // Get purchase items with product info
+    public function getPurchaseItems($purchaseId)
+    {
+        return $this->db->table('purchase_items')
+            ->select('purchase_items.*, products.name as product_name')
+            ->join('products', 'products.id = purchase_items.product_id')
+            ->where('purchase_id', $purchaseId)
+            ->get()
+            ->getResultArray();
     }
 }

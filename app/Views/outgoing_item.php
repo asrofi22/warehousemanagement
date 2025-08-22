@@ -95,7 +95,7 @@
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>#</th>
                                         <th>Produk</th>
                                         <th>Tanggal</th>
                                         <th>Jumlah</th>
@@ -108,9 +108,9 @@
                                             <td colspan="5" class="text-center">Tidak ada item keluar ditemukan</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($outgoing_items as $item): ?>
+                                        <?php foreach ($outgoing_items as $index => $item): ?>
                                             <tr>
-                                                <td><?= esc($item['id']) ?></td>
+                                                <td><?= $index + 1 ?></td>
                                                 <td><?= esc($item['product_name']) ?></td>
                                                 <td><?= esc(date('d-m-Y H:i', strtotime($item['date']))) ?></td>
                                                 <td><?= esc($item['quantity']) ?></td>

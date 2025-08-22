@@ -9,16 +9,15 @@ class PurchaseModel extends Model
     protected $table = 'purchases';
     protected $primaryKey = 'id';
     protected $allowedFields = ['vendor_name', 'vendor_address', 'purchase_date', 'buyer_name'];
+    protected $returnType = 'array';
 
     protected $useAutoIncrement = true;
-    protected $returnType = 'array';
     protected $useSoftDeletes = true;
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
     protected $deletedField = 'deleted_at';
 
-    // Validation rules
     protected $validationRules = [
         'vendor_name' => 'required|max_length[255]',
         'vendor_address' => 'permit_empty',
@@ -41,7 +40,7 @@ class PurchaseModel extends Model
         ]
     ];
 
-    // Get purchases with their items
+    // Get purchases with their items count
     public function getPurchasesWithItems()
     {
         return $this->select('purchases.*, COUNT(purchase_items.id) as item_count')
@@ -58,5 +57,20 @@ class PurchaseModel extends Model
             ->where('purchase_id', $purchaseId)
             ->get()
             ->getResultArray();
+    }
+
+    // Get purchases that are eligible for incoming items
+    public function getEligiblePurchases()
+    {
+        $subquery = $this->db->table('incoming_items')
+            ->select('purchase_id')
+            ->where('deleted_at IS NULL');
+
+        return $this->select('purchases.*')
+            ->whereNotIn('purchases.id', $subquery)
+            ->join('purchase_items', 'purchase_items.purchase_id = purchases.id', 'inner')
+            ->groupBy('purchases.id')
+            ->having('SUM(purchase_items.quantity) >', 0)
+            ->findAll();
     }
 }

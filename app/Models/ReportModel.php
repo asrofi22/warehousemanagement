@@ -21,10 +21,12 @@ class ReportModel extends Model
     public function getIncomingItemsByDateRange($startDate, $endDate)
     {
         return $this->incomingItemModel
-            ->select('incoming_items.*, products.name as product_name, products.code as product_code')
-            ->join('products', 'products.id = incoming_items.product_id')
+            ->select('incoming_items.date, SUM(purchase_items.quantity) as quantity, products.name as product_name, products.code as product_code')
+            ->join('purchase_items', 'purchase_items.purchase_id = incoming_items.purchase_id')
+            ->join('products', 'products.id = purchase_items.product_id')
             ->where('incoming_items.date >=', $startDate)
             ->where('incoming_items.date <=', $endDate)
+            ->groupBy('incoming_items.id, products.id')
             ->findAll();
     }
 
