@@ -101,9 +101,13 @@ project-root/
    php spark db:seed UserSeeder
    ```
 
-   atau bisa import langsung file database sql (db_warehouse.sql) ke phpMyAdmin 
+   atau bisa import langsung file database sql (db_warehouse.sql) ke phpMyAdmin
 
-5. **Jalankan Server**
+   **Akun Admin**
+   Username : Admin
+   Password : admin123
+
+6. **Jalankan Server**
 
    ```bash
    php spark serve
