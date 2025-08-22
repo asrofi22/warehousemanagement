@@ -98,10 +98,10 @@ project-root/
 
    ```bash
    php spark migrate
-   php spark db:seed DatabaseSeeder
+   php spark db:seed UserSeeder
    ```
 
-   atau bisa import langsung db_warehouse.sql yang telah saya lampirkan ke MySQL
+   atau bisa import langsung file database sql (db_warehouse.sql) ke phpMyAdmin 
 
 5. **Jalankan Server**
 
