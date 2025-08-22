@@ -90,7 +90,7 @@ project-root/
    ```ini
    app.baseURL = 'http://localhost:8080/'
    database.default.hostname = localhost
-   database.default.database = simgudang
+   database.default.database = db_warehouse
    database.default.username = root
    database.default.password =
    database.default.DBDriver = MySQLi
@@ -102,6 +102,8 @@ project-root/
    php spark migrate
    php spark db:seed DatabaseSeeder
    ```
+
+   atau bisa import langsung db_warehouse.sql yang telah saya lampirkan ke MySQL
 
 5. **Jalankan Server**
 
