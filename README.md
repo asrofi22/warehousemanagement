@@ -104,8 +104,8 @@ project-root/
    atau bisa import langsung file database sql (db_warehouse.sql) ke phpMyAdmin
 
    **Akun Admin**
-   Username : Admin
-   Password : admin123
+   - Username : Admin
+   - Password : admin123
 
 6. **Jalankan Server**
 
